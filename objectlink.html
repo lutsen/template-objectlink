@@ -1,0 +1,52 @@
+<div class="form-group">
+	<label for="{{ property.name }}[type]" class="col-sm-2 control-label">{{ property.description }}</label>
+	<div class="col-sm-4">
+		<select class="form-control select2" id="{{ property.name }}-type" name="{{ property.name }}[type]">
+{% for type,link in property.models %}
+			<option value="{{ type }}"{% if bean[property.name].type == type %} selected="selected"{% endif %}>{{ type }}</option>
+{% endfor %}
+		</select>
+	</div>
+	<div class="col-sm-4">
+		<select class="form-control select2" id="{{ property.name }}-id" name="{{ property.name }}[id]">
+{% for type,link in property.models %}
+{%	if link != 'single' %}
+			<option value="" data-type="{{ type }}"{% if bean[property.name].id == '' and bean[property.name].type == type %} selected="selected"{% endif %}>All {{ type }} objects</option>
+{%	endif %}
+{%	for object in property.options[type] %}
+			<option value="{{ object.id }}" data-type="{{ type }}"{% if bean[property.name].id == object.id and bean[property.name].type == type %} selected="selected"{% endif %}>{{ object.title }}</option>
+{%	endfor %}
+{% endfor %}
+		</select>
+	</div>
+	<div class="col-sm-2">
+{% if bean[property.name].id %}
+		<a href="{{ path_for('getbean', { 'beantype': bean[property.name].type, 'id': bean[property.name].id }) }}" class="btn btn-default btn-block">Edit</a>
+{% elseif bean[property.name].type %}
+		<a href="{{ path_for('listbeans', { 'beantype': bean[property.name].type }) }}" class="btn btn-default btn-block">Edit</a>
+{% endif %}
+	</div>
+</div>
+
+<script type="text/javascript">
+
+if (typeof showType !== "function") { // Only define function if it doesn't exist yet.
+	function showType(type) {
+		$('#{{ property.name }}-id option').hide();
+		$('#{{ property.name }}-id').find('[data-type="' + type + '"]').show();
+	}
+}
+
+	// Init
+{% if bean[property.name].type %}
+	// Existing object
+	showType('{{ bean[property.name].type }}');
+{% else %}
+	// New object
+	showType( $('#{{ property.name }}-type').val() );
+{% endif %}
+
+	$('#{{ property.name }}-type').change(function() {
+		showType( $(this).val() );
+	});
+</script>
