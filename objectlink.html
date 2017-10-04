@@ -1,4 +1,4 @@
-<div class="form-group">
+<div class="form-group{% if property.required %} required{% endif %}">
 	<label for="{{ property.name }}[type]" class="col-sm-2 control-label">{{ property.description }}</label>
 	<div class="col-sm-4">
 		<select class="form-control select2" id="{{ property.name }}-type" name="{{ property.name }}[type]">
@@ -8,7 +8,7 @@
 		</select>
 	</div>
 	<div class="col-sm-4">
-		<select class="form-control select2" id="{{ property.name }}-id" name="{{ property.name }}[id]">
+		<select class="form-control select2" id="{{ property.name }}-id" name="{{ property.name }}[id]"{% if property.required %} required="required"{% endif %}>
 {% for type,link in property.models %}
 {%	if link != 'single' %}
 			<option value="" data-type="{{ type }}"{% if bean[property.name].id == '' and bean[property.name].type == type %} selected="selected"{% endif %}>All {{ type }} objects</option>
